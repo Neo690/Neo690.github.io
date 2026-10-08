@@ -1,0 +1,108 @@
+/* docs.css — pages du dossier business (thème hérité de l'app via data-theme) */
+:root {
+  --vert: #33553f; --vert-fonce: #2c6e49; --lien: #2c6e49;
+  --fond: #faf7f0; --carte: #ffffff; --texte: #2f3b2f; --bord: #dfe5d8;
+  --muted: #6b7a67;
+}
+html[data-theme="dark"] {
+  --fond: #1d241d; --carte: #26302a; --texte: #e6ece4; --bord: #3c4a3e;
+  --muted: #a3b3a0; --lien: #8fc7a5;
+}
+/* Thème initial posé avant le CSS (anti-flash) par un script inline */
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--fond); color: var(--texte);
+  font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+a { color: var(--lien); }
+
+.doc-head {
+  display: flex; align-items: center; gap: 16px;
+  padding: 26px 20px 20px; max-width: 980px; margin: 0 auto;
+}
+.doc-back { font-size: .9rem; text-decoration: none; white-space: nowrap; }
+.doc-icone { font-size: 2.2rem; }
+.doc-head h1 { margin: 0; font-size: 1.45rem; }
+.doc-head p { margin: 2px 0 0; color: var(--muted); font-size: .95rem; }
+
+.doc-body {
+  max-width: 980px; margin: 0 auto; padding: 8px 20px 40px;
+  background: var(--carte); border: 1px solid var(--bord); border-radius: 12px;
+}
+.doc-body h1 { font-size: 1.35rem; border-bottom: 2px solid var(--vert); padding-bottom: 6px; }
+.doc-body h2 { font-size: 1.2rem; margin-top: 1.8em; border-bottom: 1px solid var(--bord); padding-bottom: 4px; }
+.doc-body h3 { font-size: 1.05rem; margin-top: 1.5em; }
+blockquote {
+  margin: 1em 0; padding: 10px 16px; border-left: 4px solid var(--vert);
+  background: color-mix(in srgb, var(--vert) 7%, transparent); border-radius: 0 8px 8px 0;
+}
+.md-table-wrap {
+  overflow-x: auto; margin: 1em 0;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--bord); border-radius: 8px;
+}
+table { border-collapse: separate; border-spacing: 0; min-width: 640px; font-size: .92rem; }
+th, td { border: 0; border-bottom: 1px solid var(--bord); border-right: 1px solid var(--bord); padding: 7px 10px; text-align: left; vertical-align: top; }
+th:last-child, td:last-child { border-right: 0; }
+tr:last-child td { border-bottom: 0; }
+th { background: color-mix(in srgb, var(--vert) 12%, transparent); position: sticky; top: 0; }
+/* Première colonne collante au défilement horizontal (grands tableaux) */
+th:first-child, td:first-child {
+  position: sticky; left: 0; z-index: 1;
+  background: var(--carte);
+  border-right: 2px solid var(--bord);
+  min-width: 96px; max-width: 220px;
+}
+th:first-child { background: color-mix(in srgb, var(--vert) 12%, transparent); z-index: 2; }
+code {
+  background: color-mix(in srgb, var(--vert) 10%, transparent);
+  padding: 1px 5px; border-radius: 4px; font-size: .88em;
+}
+pre { overflow-x: auto; background: color-mix(in srgb, var(--vert) 8%, transparent); padding: 12px; border-radius: 8px; }
+pre code { background: none; padding: 0; }
+hr { border: none; border-top: 1px solid var(--bord); margin: 2em 0; }
+
+.doc-grid {
+  max-width: 980px; margin: 0 auto; padding: 0 20px 40px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;
+}
+.doc-card {
+  display: block; background: var(--carte); border: 1px solid var(--bord);
+  border-radius: 12px; padding: 18px; text-decoration: none; color: inherit;
+  transition: transform .12s, box-shadow .12s;
+}
+.doc-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.08); }
+.doc-card-icone { font-size: 1.8rem; }
+.doc-card h2 { margin: 8px 0 2px; font-size: 1.05rem; }
+.doc-card-sous { margin: 0; color: var(--vert-fonce); font-size: .85rem; font-weight: 600; }
+html[data-theme="dark"] .doc-card-sous { color: var(--lien); }
+.doc-card-resume { margin: 8px 0 0; color: var(--muted); font-size: .9rem; }
+
+.doc-foot {
+  max-width: 980px; margin: 0 auto; padding: 10px 20px 34px;
+  color: var(--muted); font-size: .85rem;
+}
+
+/* ── Petit écran : densité réduite, tableaux compacts ───────── */
+@media (max-width: 640px) {
+  .doc-head { padding: 18px 12px 12px; gap: 10px; }
+  .doc-icone { font-size: 1.6rem; }
+  .doc-head h1 { font-size: 1.15rem; }
+  .doc-body { padding: 6px 12px 28px; border-radius: 10px; }
+  .doc-body h1 { font-size: 1.18rem; }
+  .doc-body h2 { font-size: 1.06rem; }
+  .doc-grid { grid-template-columns: 1fr; padding: 0 12px 28px; gap: 12px; }
+  .doc-foot { padding: 6px 12px 26px; }
+  table { min-width: 560px; font-size: .8rem; }
+  th, td { padding: 5px 7px; }
+  th:first-child, td:first-child { min-width: 76px; max-width: 140px; }
+  blockquote { padding: 8px 12px; }
+  pre { padding: 10px; font-size: .8rem; }
+}
+@media print {
+  .doc-head, .doc-foot { display: none; }
+  .doc-body { border: none; }
+  .md-table-wrap { overflow: visible; border: 0; }
+  table { min-width: 0; width: 100%; font-size: .78rem; }
+  th:first-child, td:first-child { position: static; min-width: 0; max-width: none; }
+}

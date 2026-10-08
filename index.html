@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Herbier — Plantes médicinales, bienfaits et associations</title>
+  <meta name="description" content="Exploration raisonnée des vertus botaniques : 140 plantes médicinales documentées, leurs bienfaits et 60 associations en recettes complètes." />
+  <!-- Polices locales (hors-ligne complet) : régénérées par node localize-fonts.mjs -->
+  <link rel="preload" href="fonts-local.css" as="style" />
+  <link href="fonts-local.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=17" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#33553f" />
+  <!-- iOS / iPadOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Herbier" />
+  <link rel="apple-touch-icon" href="icons/icon-180.png" />
+  <link rel="apple-touch-icon" sizes="167x167" href="icons/icon-167.png" />
+  <!-- Android / Chrome -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="application-name" content="Herbier" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="tools">
+      <button class="icon-btn hidden" id="install-btn" title="Installer l'application" aria-label="Installer l'application">⬇</button>
+      <button class="icon-btn" id="theme-btn" title="Basculer clair/sombre" aria-label="Basculer le thème">🌙</button>
+    </div>
+    <h1>L'Herbier Médicinal</h1>
+    <p class="slogan">Une exploration raisonnée des vertus botaniques et des synergies végétales.</p>
+  </header>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <span class="search-icon" aria-hidden="true">🔍</span>
+      <input id="search" type="search" placeholder="Rechercher une plante, un bienfait ou une association…" aria-label="Recherche" />
+      <button class="clear-btn" id="clear-search" aria-label="Effacer la recherche">✕</button>
+    </div>
+    <nav class="tabs" aria-label="Sections">
+      <button class="tab-btn active" data-tab="plantes">Plantes (<span id="count-plantes">140</span>)</button>
+      <button class="tab-btn" data-tab="associations">Associations (<span id="count-assocs">60</span>)</button>
+      <button class="tab-btn" data-tab="pharmacopee">Pharmacopée</button>
+      <button class="tab-btn" data-tab="quizz">🧠 Quizz</button>
+      <button class="tab-btn" data-tab="assistant">Assistant santé</button>
+      <button class="tab-btn" data-tab="comparateur">Comparateur</button>
+      <button class="tab-btn" data-tab="carte">Carte des synergies</button>
+      <button class="tab-btn" data-tab="dossier">💼 Dossier business</button>
+      <button class="tab-btn" data-tab="maj">Mise à jour (<span id="count-maj">0</span>)</button>
+    </nav>
+  </div>
+
+  <main>
+    <section id="tab-plantes">
+      <div class="chips" id="chips" role="group" aria-label="Filtrer par bienfait"></div>
+      <div class="grid" id="plantes-grid"></div>
+      <p class="empty" id="plantes-empty" hidden>Aucune plante ne correspond à votre recherche.</p>
+    </section>
+
+    <section id="tab-associations" hidden>
+      <div class="grid assoc-grid" id="assoc-grid"></div>
+      <p class="empty" id="assoc-empty" hidden>Aucune association ne correspond à votre recherche.</p>
+    </section>
+
+    <section id="tab-pharmacopee" hidden>
+      <div class="pharma-print-head">
+        <h2>L'Herbier Médicinal — Pharmacopée A-Z</h2>
+        <p><span id="pharma-print-count"></span> plantes médicinales · index des noms français et latins · édité le <span id="pharma-print-date"></span></p>
+      </div>
+      <div class="pharma-tools">
+        <div class="az-bar" id="az-bar" role="group" aria-label="Navigation par lettre"></div>
+        <div class="mode-switch" role="group" aria-label="Mode d'index">
+          <button class="mode-btn active" data-mode="fr" title="Index par nom français">Nom français</button>
+          <button class="mode-btn" data-mode="latin" title="Index par nom latin">Nom latin</button>
+        </div>
+        <button id="pharma-print" title="Imprimer l'index complet A-Z">🖨 Imprimer</button>
+      </div>
+      <div id="pharma-index"></div>
+      <p class="empty" id="pharma-empty" hidden>Aucune plante pour cette lettre.</p>
+    </section>
+
+    <section id="tab-quizz" hidden>
+      <!-- Le contenu est rendu par quizz.js (initQuizz) -->
+    </section>
+
+    <section id="tab-assistant" hidden>
+      <div class="assistant-wrap">
+        <div class="assistant-intro">
+          <h2>Votre accompagnement personnalisé 🌿</h2>
+          <p>Répondez en 3 étapes : je croise vos objectifs avec les 34 associations et élimine celles qui présentent des contre-indications pour vous.</p>
+        </div>
+        <div id="assistant-steps"></div>
+        <button class="btn assistant-run" id="assistant-run">Obtenir mes 3 recommandations</button>
+        <div id="assistant-results" hidden></div>
+
+        <div class="chat-box">
+          <h3>💬 Ou discutez avec l'assistant</h3>
+          <div class="chat-log" id="chat-log" aria-live="polite"></div>
+          <div class="chat-input-row">
+            <input id="chat-input" type="text" placeholder="Ex : je dors mal, quelles plantes ?" aria-label="Message à l'assistant" />
+            <button class="btn" id="chat-send">Envoyer</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-comparateur" hidden>
+      <div class="comp-wrap">
+        <p class="comp-intro">Cochez deux plantes ou plus : je liste les associations qui les réunissent déjà et les précautions qui se cumulent.</p>
+        <div class="comp-picker">
+          <input id="comp-search" type="search" placeholder="Ajouter une plante…" aria-label="Rechercher une plante à comparer" />
+          <div id="comp-selected" class="comp-selected" aria-live="polite"></div>
+          <div id="comp-picklist" class="comp-picklist" role="group" aria-label="Plantes à comparer"></div>
+          <div class="comp-tools">
+            <button id="comp-favs" class="chip">♥ Mes favoris</button>
+            <button id="comp-clear" class="chip">Tout effacer</button>
+          </div>
+        </div>
+        <div id="comp-results" hidden>
+          <h3 class="reco-title">🤝 Associations réunissant vos plantes</h3>
+          <div id="comp-assocs"></div>
+          <h3 class="reco-title">⚠ Précautions croisées</h3>
+          <div id="comp-warnings"></div>
+          <p class="reco-disclaimer">⚠ Analyse indicative d'après les fiches de la base — elle ne remplace pas un avis médical ou pharmaceutique.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-carte" hidden>
+      <div class="map-search-row">
+        <input id="map-search" type="search" list="map-suggestions"
+               placeholder="Isoler les duos d'une plante (ex. sureau, valériane…)…"
+               aria-label="Rechercher une plante sur la carte" />
+        <datalist id="map-suggestions"></datalist>
+      </div>
+      <p class="map-search-result" id="map-search-result" hidden></p>
+      <div class="iframe-wrap">
+        <iframe id="synergy-frame" src="carte-synergies.html" title="Carte des synergies entre plantes médicinales"
+                loading="lazy"></iframe>
+      </div>
+      <p class="map-note">
+        Les 12 duos récurrents des 34 associations : Sureau + Échinacée et Cassis + Ortie (×3), puis dix duos ×2
+        (stress, sommeil, ménopause, digestion, immunité, drainage). Ouvrez la
+        <a href="carte-synergies.html" target="_blank" rel="noopener">carte en plein écran ↗</a>
+        pour zoomer, suivre les liens ou changer de thème.
+      </p>
+    </section>
+    <section id="tab-dossier" hidden>
+      <div class="iframe-wrap">
+        <iframe id="dossier-frame" src="docs/index.html" title="Dossier business de l'herboristerie"
+                loading="lazy"></iframe>
+      </div>
+      <p class="map-note">
+        Tout le projet d'herboristerie en 8 documents : guide des 148 plantes, tableau croisé
+        fournisseurs, certificats bio vérifiés, comparatif de prix (COGS mesuré), business plan,
+        gamme de tisanes, pitch deck et note Algérie. Ouvrez le
+        <a href="docs/index.html" target="_blank" rel="noopener">dossier en plein écran ↗</a>.
+      </p>
+    </section>
+    <section id="tab-maj" hidden>
+      <div class="maj-wrap">
+        <div class="maj-intro">
+          <h2>Enrichir l'herbier ✍️</h2>
+          <p>Ajoutez vos plantes et vos associations : elles s'intègrent à la recherche, aux
+          favoris, à la pharmacopée, au comparateur et à l'assistant. Tout reste sur votre
+          appareil (fonctionne hors-ligne) et s'exporte en JSON pour sauvegarde ou partage.</p>
+        </div>
+
+        <div class="maj-tools">
+          <button class="btn" id="maj-export">⬇ Exporter mes ajouts</button>
+          <label class="btn ghost maj-import-label">⬆ Importer un JSON
+            <input type="file" id="maj-import" accept="application/json,.json" hidden />
+          </label>
+          <button class="btn ghost" id="maj-reset">🗑 Tout effacer</button>
+        </div>
+
+        <details class="maj-box" id="maj-box-plante" open>
+          <summary>➕ Ajouter une plante</summary>
+          <form id="maj-form-plante" autocomplete="off">
+            <div class="maj-grid">
+              <label>Nom <input name="nom" required placeholder="Ex : Mélisse citronnelle" /></label>
+              <label>Nom latin <input name="latin" required placeholder="Melissa officinalis" /></label>
+              <label>Famille <input name="famille" required placeholder="Lamiacées" /></label>
+              <label>Emoji (sans image) <input name="emoji" maxlength="4" placeholder="🌿" /></label>
+            </div>
+            <label>Parties utilisées <input name="parties" placeholder="Feuilles, sommités fleuries" /></label>
+            <label>Bienfaits (séparés par des virgules) <input name="bienfaits" required placeholder="Sommeil, Digestion, Stress" /></label>
+            <label>Usages <textarea name="usages" rows="2" placeholder="Nervosité, troubles du sommeil…"></textarea></label>
+            <label>Préparation <input name="preparation" placeholder="Infusion 10 min, 1 à 2 tasses par jour." /></label>
+            <div class="maj-grid">
+              <label>Principes actifs <input name="actifs" placeholder="Huile essentielle, polyphénols…" /></label>
+              <label>Formes <input name="formes" placeholder="Infusion, teinture, extrait sec…" /></label>
+              <label>Posologie <input name="posologie" placeholder="1 à 2 tasses par jour" /></label>
+              <label>Grossesse <input name="grossesse" placeholder="Autorisée aux doses usuelles." /></label>
+              <label>Interactions <input name="interactions" placeholder="Aucune connue aux doses usuelles." /></label>
+              <label>Précaution <input name="precaution" placeholder="À éviter en cas de…" /></label>
+            </div>
+            <p class="maj-err" id="maj-err-plante" hidden></p>
+            <button class="btn maj-submit" type="submit">Enregistrer la plante</button>
+          </form>
+        </details>
+
+        <details class="maj-box" id="maj-box-assoc">
+          <summary>➕ Ajouter une association (recette)</summary>
+          <form id="maj-form-assoc" autocomplete="off">
+            <div class="maj-grid">
+              <label>Nom de la recette <input name="nom" required placeholder="Ex : Tisane du soir profond" /></label>
+              <label>Objectif <input name="objectif" required placeholder="Sommeil profond" /></label>
+              <label>Durée <input name="temps" placeholder="5 min + 10 min d'infusion" /></label>
+            </div>
+            <label>Plantes (2 minimum, séparées par des virgules)
+              <input name="plantes" required placeholder="Mélisse, Aubépine, Passiflore" list="maj-plantes-list" />
+            </label>
+            <datalist id="maj-plantes-list"></datalist>
+            <label>Effet attendu <input name="effet" required placeholder="Calme les tensions du soir." /></label>
+            <label>Ingrédients (un par ligne) <textarea name="ingredients" rows="3" required placeholder="1 c. à c. de mélisse (1 g)\n300 ml d'eau"></textarea></label>
+            <label>Préparation (une étape par ligne) <textarea name="preparation" rows="3" required placeholder="Mélanger les plantes.\nInfuser 10 min à couvert."></textarea></label>
+            <div class="maj-grid">
+              <label>Posologie <input name="posologie" placeholder="1 à 2 tasses le soir." /></label>
+              <label>Conservation <input name="conservation" placeholder="Mélange sec : 12 mois." /></label>
+              <label>Avertissement <input name="avertissement" placeholder="Ne remplace pas un traitement." /></label>
+            </div>
+            <p class="maj-err" id="maj-err-assoc" hidden></p>
+            <button class="btn maj-submit" type="submit">Enregistrer l'association</button>
+          </form>
+        </details>
+
+        <div class="maj-list" id="maj-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>⚠ Ces informations sont données à titre indicatif et ne remplacent pas l'avis d'un médecin ou d'un pharmacien, notamment en cas de grossesse, de traitement en cours ou de maladie chronique.</p>
+    <p class="no-print" style="margin-top:.5rem">
+      <a href="carte-therapeutique.html" target="_blank" rel="noopener">🗺 Carte thérapeutique du système (archify)</a>
+    </p>
+  </footer>
+
+  <!-- Modale fiche plante -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-nom">
+      <div class="hero" id="modal-hero">
+        <img id="modal-img" src="" alt="" />
+        <div class="emoji-hero" id="modal-emoji" aria-hidden="true"></div>
+        <div class="titles">
+          <h2 id="modal-nom"></h2>
+          <p class="latin" id="modal-latin"></p>
+        </div>
+      </div>
+      <button class="close" id="modal-close" aria-label="Fermer">✕</button>
+      <div class="content">
+        <div class="tag-row" id="modal-tags"></div>
+        <dl>
+          <dt>Famille</dt><dd id="modal-famille"></dd>
+          <dt>Parties utilisées</dt><dd id="modal-parties"></dd>
+          <dt>Usages</dt><dd id="modal-usages"></dd>
+          <dt>Préparation</dt><dd id="modal-preparation"></dd>
+          <dt>Principes actifs</dt><dd id="modal-actifs"></dd>
+          <dt>Formes galéniques</dt><dd id="modal-formes"></dd>
+          <dt>Posologie</dt><dd id="modal-posologie"></dd>
+          <dt>Interactions</dt><dd id="modal-interactions"></dd>
+          <dt>Grossesse</dt><dd id="modal-grossesse"></dd>
+        </dl>
+        <p class="warn" id="modal-warn"></p>
+        <div class="see-assocs" id="modal-assocs"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer style="margin-top:40px;padding:22px 16px;text-align:center;font-size:.85rem;color:#6b7a67;border-top:1px solid #dfe5d8">
+    L'Herbier Médicinal — contenu éducatif, ne remplace pas un avis médical ·
+    <a href="privacy-policy.html" style="color:#2c6e49">Politique de confidentialité</a> ·
+    <a href="terms-of-service.html" style="color:#2c6e49">Conditions d'utilisation</a> ·
+    <a href="callback.html" style="color:#2c6e49">Intégration TikTok (démo)</a>
+  </footer>
+
+  <script src="images-manifest.js"></script>
+  <script type="module" src="app.js?v=16"></script>
+  <script>
+    // Sync du thème app → iframe « Dossier business » (data-theme n' traverse pas les iframes)
+    (function () {
+      var apply = function () {
+        var t = document.documentElement.dataset.theme || "light";
+        try { sessionStorage.setItem("herbier-theme", t); } catch (e) {}
+        var f = document.getElementById("dossier-frame");
+        if (f && f.contentDocument) {
+          f.contentDocument.documentElement.dataset.theme = t;
+        }
+      };
+      ["DOMContentLoaded", "load"].forEach(function (ev) {
+        addEventListener(ev, apply);
+      });
+      new MutationObserver(apply).observe(document.documentElement, {
+        attributes: true, attributeFilter: ["data-theme"]
+      });
+    })();
+  </script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+    }
+  </script>
+</body>
+</html>

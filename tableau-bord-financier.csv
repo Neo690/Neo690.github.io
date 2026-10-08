@@ -1,0 +1,62 @@
+Business plan herboristerie bio => Tableau de bord financier 12 mois
+ATTENTION : les formules commencent par "=" et se recalculent automatiquement dans Excel / LibreOffice / Google Sheets.
+Les hypothèses modifiables sont dans la feuille PARAMETRES (cellules oranges en couleur) : B4 panier, B5 COGS, B6 croissance, B7 panier B2B, B10 cotisations, B11 IR, B12 paiement, B13 fixes, B14 amort one-shot, B15 marketing.
+NB : un CSV ne contient qu'une seule feuille. Ci-dessous, chaque "feuille" est une section. La feuille PARAMETRES utilise des plages nommées déclarées ici : panier_b2c, cogs_pct, croissance_b2c, panier_b2b, cotis_pct, ir_pct, paiement_pct, fixes_mensuels, amort_oneshot, marketing_mensuel.
+======= FEUILLE : PARAMETRES =======
+Parametre,Valeur,Unite,Commentaire
+panier_b2c,22,EUR,panier moyen B2C net (modifiable - source BP §7)
+panier_b2b,420,EUR,panier moyen B2B net (modifiable)
+croissance_b2c,0.15,% / mois,croissance mensuelle commandes B2C (15% base BP)
+mois_lancement,2,mois,M2 = lancement commercial
+commandes_m2,40,commandes,commandes B2C au lancement M2 (base BP §7)
+part_b2b_m4,400,EUR,CA B2B au M4 puis +20% / mois (base BP §7)
+croissance_b2b,0.20,% / mois,croissance mensuelle CA B2B
+cogs_pct,0.32,% du CA,COGS (marchandises + conditionnement + expédition)
+cotis_pct,0.123,% du CA,cotisations sociales micro-entreprise (achat-revente)
+ir_pct,0.01,% du CA,versement libératoire IR (achat-revente)
+paiement_pct,0.018,% du CA,frais de paiement Stripe réel moyen
+fixes_mensuels,1090,EUR / mois,frais fixes récurrents (BP §6)
+amort_oneshot,405,EUR / mois,amortissement one-shot 9700 EUR sur 24 mois
+marketing_mensuel,0,EUR / mois,NE PAS modifier : déjà inclus dans fixes_mensuels (voir BP §6)
+CA_breakeven,=(fixes_mensuels+amort_oneshot)/(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),EUR / mois,seuil de rentabilité mensuel (recalcule automatiquement)
+marge_contributive,=1-(cogs_pct+cotis_pct+ir_pct+paiement_pct),%,marge contributive unitaire moyenne
+commandes_breakeven,=CA_breakeven/panier_b2c,commandes / mois,seuil en nb de commandes B2C (recalcule automatiquement)
+======= FEUILLE : PREVISIONNEL_12_MOIS =======
+Mois,Commandes B2C,CA B2C (EUR),CA B2B (EUR),CA total (EUR),COGS (EUR),Cotisations (EUR),IR (EUR),Paiement (EUR),Marge contributive (EUR),Frais fixes (EUR),Amort one-shot (EUR),Resultat mensuel (EUR),CA cumule (EUR),Resultat cumule (EUR),Statut
+1,0,=B4*panier_b2c,0,=C4+D4,=E4*cogs_pct,=E4*cotis_pct,=E4*ir_pct,=E4*paiement_pct,=E4*(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),=fixes_mensuels,=amort_oneshot,=J4-K4-L4-M4,=E4,=N4,"=IF(N4>=CA_breakeven,""BREAKEVEN"",""en dessous"")"
+2,"=MAX(0,commandes_m2)",=B5*panier_b2c,0,=C5+D5,=E5*cogs_pct,=E5*cotis_pct,=E5*ir_pct,=E5*paiement_pct,=E5*(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),=fixes_mensuels,=amort_oneshot,=J5-K5-L5-M5,=N4+E5,=O4+N5,"=IF(N5>=CA_breakeven,""BREAKEVEN"",""en dessous"")"
+3,"=ROUND(B5*(1+croissance_b2c),0)",=B6*panier_b2c,0,=C6+D6,=E6*cogs_pct,=E6*cotis_pct,=E6*ir_pct,=E6*paiement_pct,=E6*(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),=fixes_mensuels,=amort_oneshot,=J6-K6-L6-M6,=N5+E6,=O5+N6,"=IF(N6>=CA_breakeven,""BREAKEVEN"",""en dessous"")"
+4,"=ROUND(B6*(1+croissance_b2c),0)",=B7*panier_b2c,=part_b2b_m4,=C7+D7,=E7*cogs_pct,=E7*cotis_pct,=E7*ir_pct,=E7*paiement_pct,=E7*(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),=fixes_mensuels,=amort_oneshot,=J7-K7-L7-M7,=N6+E7,=O6+N7,"=IF(N7>=CA_breakeven,""BREAKEVEN"",""en dessous"")"
+5,"=ROUND(B7*(1+croissance_b2c),0)",=B8*panier_b2c,=D7*(1+croissance_b2b),=C8+D8,=E8*cogs_pct,=E8*cotis_pct,=E8*ir_pct,=E8*paiement_pct,=E8*(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),=fixes_mensuels,=amort_oneshot,=J8-K8-L8-M8,=N7+E8,=O7+N8,"=IF(N8>=CA_breakeven,""BREAKEVEN"",""en dessous"")"
+6,"=ROUND(B8*(1+croissance_b2c),0)",=B9*panier_b2c,=D8*(1+croissance_b2b),=C9+D9,=E9*cogs_pct,=E9*cotis_pct,=E9*ir_pct,=E9*paiement_pct,=E9*(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),=fixes_mensuels,=amort_oneshot,=J9-K9-L9-M9,=N8+E9,=O8+N9,"=IF(N9>=CA_breakeven,""BREAKEVEN"",""en dessous"")"
+7,"=ROUND(B9*(1+croissance_b2c),0)",=B10*panier_b2c,=D9*(1+croissance_b2b),=C10+D10,=E10*cogs_pct,=E10*cotis_pct,=E10*ir_pct,=E10*paiement_pct,=E10*(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),=fixes_mensuels,=amort_oneshot,=J10-K10-L10-M10,=N9+E10,=O9+N10,"=IF(N10>=CA_breakeven,""BREAKEVEN"",""en dessous"")"
+8,"=ROUND(B10*(1+croissance_b2c),0)",=B11*panier_b2c,=D10*(1+croissance_b2b),=C11+D11,=E11*cogs_pct,=E11*cotis_pct,=E11*ir_pct,=E11*paiement_pct,=E11*(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),=fixes_mensuels,=amort_oneshot,=J11-K11-L11-M11,=N10+E11,=O10+N11,"=IF(N11>=CA_breakeven,""BREAKEVEN"",""en dessous"")"
+9,"=ROUND(400,0)",=B12*panier_b2c,=D11*(1+croissance_b2b)+1000,=C12+D12,=E12*cogs_pct,=E12*cotis_pct,=E12*ir_pct,=E12*paiement_pct,=E12*(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),=fixes_mensuels,=amort_oneshot,=J12-K12-L12-M12,=N11+E12,=O11+N12,"=IF(N12>=CA_breakeven,""BREAKEVEN"",""en dessous"")"
+10,"=ROUND(300,0)",=B13*panier_b2c,=D12*(1+croissance_b2b),=C13+D13,=E13*cogs_pct,=E13*cotis_pct,=E13*ir_pct,=E13*paiement_pct,=E13*(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),=fixes_mensuels,=amort_oneshot,=J13-K13-L13-M13,=N12+E13,=O12+N13,"=IF(N13>=CA_breakeven,""BREAKEVEN"",""en dessous"")"
+11,"=ROUND(B13*(1+croissance_b2c),0)",=B14*panier_b2c,=D13*(1+croissance_b2b),=C14+D14,=E14*cogs_pct,=E14*cotis_pct,=E14*ir_pct,=E14*paiement_pct,=E14*(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),=fixes_mensuels,=amort_oneshot,=J14-K14-L14-M14,=N13+E14,=O13+N14,"=IF(N14>=CA_breakeven,""BREAKEVEN"",""en dessous"")"
+12,"=ROUND(B14*(1+croissance_b2c),0)",=B15*panier_b2c,=D14*(1+croissance_b2b),=C15+D15,=E15*cogs_pct,=E15*cotis_pct,=E15*ir_pct,=E15*paiement_pct,=E15*(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),=fixes_mensuels,=amort_oneshot,=J15-K15-L15-M15,=N14+E15,=O14+N15,"=IF(N15>=CA_breakeven,""BREAKEVEN"",""en dessous"")"
+TOTAL,=SUM(B4:B15),=SUM(C4:C15),=SUM(D4:D15),=SUM(E4:E15),=SUM(F4:F15),=SUM(G4:G15),=SUM(H4:H15),=SUM(I4:I15),=SUM(J4:J15),=SUM(K4:K15),=SUM(L4:L15),=SUM(N4:N15),,,,"=IF(O15>0,""ANNEE RENTABLE"",""ANNEE DEFICITAIRE"")"
+======= FEUILLE : SENSIBILITE_PANIER_COGS =======
+Sensibilite : Resultat annuel cumule (EUR) en fonction du panier moyen B2C (lignes) et du COGS (colonnes). Formules relisent les parametres PARAMETRES.
+Panier \ COGS,26%,28%,30%,32%,34%,36%,38%
+18,=18*SUM(B4:B15)*(1-(0.26+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=18*SUM(B4:B15)*(1-(0.28+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=18*SUM(B4:B15)*(1-(0.30+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=18*SUM(B4:B15)*(1-(0.32+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=18*SUM(B4:B15)*(1-(0.34+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=18*SUM(B4:B15)*(1-(0.36+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=18*SUM(B4:B15)*(1-(0.38+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12
+20,=20*SUM(B4:B15)*(1-(0.26+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=20*SUM(B4:B15)*(1-(0.28+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=20*SUM(B4:B15)*(1-(0.30+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=20*SUM(B4:B15)*(1-(0.32+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=20*SUM(B4:B15)*(1-(0.34+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=20*SUM(B4:B15)*(1-(0.36+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=20*SUM(B4:B15)*(1-(0.38+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12
+22,=22*SUM(B4:B15)*(1-(0.26+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=22*SUM(B4:B15)*(1-(0.28+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=22*SUM(B4:B15)*(1-(0.30+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=22*SUM(B4:B15)*(1-(0.32+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=22*SUM(B4:B15)*(1-(0.34+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=22*SUM(B4:B15)*(1-(0.36+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=22*SUM(B4:B15)*(1-(0.38+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12
+24,=24*SUM(B4:B15)*(1-(0.26+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=24*SUM(B4:B15)*(1-(0.28+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=24*SUM(B4:B15)*(1-(0.30+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=24*SUM(B4:B15)*(1-(0.32+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=24*SUM(B4:B15)*(1-(0.34+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=24*SUM(B4:B15)*(1-(0.36+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=24*SUM(B4:B15)*(1-(0.38+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12
+26,=26*SUM(B4:B15)*(1-(0.26+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=26*SUM(B4:B15)*(1-(0.28+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=26*SUM(B4:B15)*(1-(0.30+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=26*SUM(B4:B15)*(1-(0.32+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=26*SUM(B4:B15)*(1-(0.34+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=26*SUM(B4:B15)*(1-(0.36+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=26*SUM(B4:B15)*(1-(0.38+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12
+28,=28*SUM(B4:B15)*(1-(0.26+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=28*SUM(B4:B15)*(1-(0.28+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=28*SUM(B4:B15)*(1-(0.30+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=28*SUM(B4:B15)*(1-(0.32+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=28*SUM(B4:B15)*(1-(0.34+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=28*SUM(B4:B15)*(1-(0.36+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12,=28*SUM(B4:B15)*(1-(0.38+cotis_pct+ir_pct+paiement_pct))-fixes_mensuels*12-amort_oneshot*12
+======= FEUILLE : BREAK_EVEN_DYNAMIQUE =======
+Scenario,Panier (EUR),COGS (%),Marge contributive (%),Breakeven mensuel CA (EUR),Breakeven commandes B2C / mois,Ecart vs scenario de base (EUR)
+Base (BP),=panier_b2c,=cogs_pct,=1-(cogs_pct+cotis_pct+ir_pct+paiement_pct),=CA_breakeven,=CA_breakeven/panier_b2c,0
+Panier 28 EUR,28,=cogs_pct,=1-(cogs_pct+cotis_pct+ir_pct+paiement_pct),=(fixes_mensuels+amort_oneshot)/(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),=E3/28,=E3-E2
+COGS +5 pts,=panier_b2c,=cogs_pct+0.05,=1-((cogs_pct+0.05)+cotis_pct+ir_pct+paiement_pct),=(fixes_mensuels+amort_oneshot)/(1-((cogs_pct+0.05)+cotis_pct+ir_pct+paiement_pct)),=E4/panier_b2c,=E4-E2
+Marketing 1200,=panier_b2c,=cogs_pct,=1-(cogs_pct+cotis_pct+ir_pct+paiement_pct),=(fixes_mensuels+amort_oneshot+110)/(1-(cogs_pct+cotis_pct+ir_pct+paiement_pct)),=E5/panier_b2c,=E5-E2
+Panier 28 + COGS +5,28,=cogs_pct+0.05,=1-((cogs_pct+0.05)+cotis_pct+ir_pct+paiement_pct),=(fixes_mensuels+amort_oneshot)/(1-((cogs_pct+0.05)+cotis_pct+ir_pct+paiement_pct)),=E6/28,=E6-E2
+=======
+Notes d'utilisation :
+1. Ouvrir ce fichier dans Excel / LibreOffice / Google Sheets : les formules se recalculent automatiquement.
+2. Modifier les cellules de la feuille PARAMETRES pour simuler un scénario (panier, COGS, fixes, cotisations...).
+3. La feuille SENSIBILITE est une matrice à double entrée : panier B2C (lignes) × COGS (colonnes) -> résultat annuel net.
+4. La feuille BREAK_EVEN_DYNAMIQUE compare 5 scénarios avec calcul du seuil en CA et en nombre de commandes.
+5. Toutes les valeurs reprennent les hypothèses du BUSINESS-PLAN-HERBORISTERIE.md (§6 à §8) — un seul endroit à modifier = feuille PARAMETRES.
+6. Limites : CSV mono-feuille - lors de l'import, les sections sont des blocs successifs, pas des onglets. Les plages nommées (panier_b2c etc.) doivent être recréées manuellement dans Excel si l'import automatique ne les reconnait pas (Données > Gestionnaire de noms).

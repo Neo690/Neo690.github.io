@@ -1,0 +1,29 @@
+{
+  "name": "herbier-medicinal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "L'Herbier Médicinal — 120 plantes, 34 associations, cartes archify et exports JSON/CSV.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "fonts": "node localize-fonts.mjs",
+    "dev": "node serve.mjs",
+    "lan": "node serve-lan.mjs",
+    "export": "node export.mjs",
+    "counters": "node update-counters.mjs",
+    "www": "node copy-www.mjs",
+    "cap-sync": "node copy-www.mjs && npx cap sync android && node patch-gradle-java.mjs",
+    "cap-sync-ios": "node copy-www.mjs && npx cap sync ios",
+    "apk": "npm run -s cap-sync && cd android && ./gradlew assembleDebug",
+    "aab": "npm run -s cap-sync && cd android && ./gradlew bundleRelease",
+    "ios-assets": "node sync-ios-icons.mjs"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/ios": "^8.5.2",
+    "@netlify/blobs": "^11.1.1",
+    "qrcode": "^1.5.4"
+  }
+}
