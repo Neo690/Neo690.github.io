@@ -1,0 +1,277 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Carte des synergies — les duos qui reviennent",
+    "output": "carte-synergies.html",
+    "visual_preset": "editorial",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "apaiser",
+        "label": "Apaiser les nerfs",
+        "focus": [
+          "symptome",
+          "filtres",
+          "duo-aub-mel",
+          "duo-pas-val",
+          "duo-mel-sau",
+          "duo-cam-men"
+        ],
+        "note": "Aubépine + Mélisse pour le stress, Passiflore + Valériane pour le sommeil, Camomille + Menthe pour la digestion."
+      },
+      {
+        "id": "defendre",
+        "label": "Bouclier immunitaire",
+        "focus": [
+          "symptome",
+          "filtres",
+          "duo-sur-ech",
+          "duo-sur-thy",
+          "duo-gin-sur",
+          "duo-gin-ech"
+        ],
+        "note": "Le quatuor sureau, échinacée, thym et gingembre forme six duos défensifs, dont deux reviennent 3 fois."
+      },
+      {
+        "id": "tonifier",
+        "label": "Digérer, drainer & tonifier",
+        "focus": [
+          "symptome",
+          "filtres",
+          "duo-thy-ech",
+          "duo-gin-thy",
+          "duo-bar-pis",
+          "duo-cas-ort"
+        ],
+        "note": "Duos ORL d'hiver, drainage du foie et de la peau, et le tandem reminéralisant Cassis + Ortie."
+      },
+      {
+        "id": "securite",
+        "label": "Sécuriser la recette",
+        "focus": [
+          "filtres",
+          "duo-sur-ech",
+          "duo-aub-mel",
+          "duo-cas-ort"
+        ],
+        "note": "Dans l'application, le questionnaire santé en 3 étapes filtre chaque duo selon vos antécédents avant toute recette."
+      }
+    ]
+  },
+  "lanes": [
+    {
+      "id": "nerfs",
+      "label": "Apaiser, dormir & digérer"
+    },
+    {
+      "id": "immunite",
+      "label": "Bouclier immunitaire"
+    },
+    {
+      "id": "tonus",
+      "label": "ORL, drainage & tonus"
+    }
+  ],
+  "phases": [
+    {
+      "id": "identifier",
+      "label": "Décrire le besoin",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "composer",
+      "label": "Composer le duo",
+      "fromCol": 2,
+      "toCol": 5,
+      "variant": "emphasis"
+    }
+  ],
+  "mainPath": [
+    "symptome",
+    "filtres",
+    "duo-sur-ech"
+  ],
+  "nodes": [
+    {
+      "id": "symptome",
+      "lane": "nerfs",
+      "col": 0,
+      "type": "external",
+      "label": "Besoin santé",
+      "sublabel": "symptôme ou objectif",
+      "width": 140
+    },
+    {
+      "id": "filtres",
+      "lane": "nerfs",
+      "col": 1,
+      "type": "backend",
+      "label": "Recherche",
+      "sublabel": "120 plantes · 44 bienfaits",
+      "width": 140
+    },
+    {
+      "id": "duo-aub-mel",
+      "lane": "nerfs",
+      "col": 2,
+      "type": "backend",
+      "label": "Aubépine + Mélisse",
+      "sublabel": "stress · ×2",
+      "width": 158
+    },
+    {
+      "id": "duo-pas-val",
+      "lane": "nerfs",
+      "col": 3,
+      "type": "backend",
+      "label": "Passiflore + Valériane",
+      "sublabel": "sommeil · ×2",
+      "width": 158
+    },
+    {
+      "id": "duo-mel-sau",
+      "lane": "nerfs",
+      "col": 4,
+      "type": "backend",
+      "label": "Mélisse + Sauge",
+      "sublabel": "ménopause · ×2",
+      "width": 158
+    },
+    {
+      "id": "duo-cam-men",
+      "lane": "nerfs",
+      "col": 5,
+      "type": "backend",
+      "label": "Camomille + Menthe",
+      "sublabel": "digestion · ×2",
+      "width": 158
+    },
+    {
+      "id": "duo-sur-ech",
+      "lane": "immunite",
+      "col": 2,
+      "type": "backend",
+      "label": "Sureau + Échinacée",
+      "sublabel": "hivernal · ×3",
+      "width": 158
+    },
+    {
+      "id": "duo-sur-thy",
+      "lane": "immunite",
+      "col": 3,
+      "type": "backend",
+      "label": "Sureau + Thym",
+      "sublabel": "ORL · ×2",
+      "width": 158
+    },
+    {
+      "id": "duo-gin-sur",
+      "lane": "immunite",
+      "col": 4,
+      "type": "backend",
+      "label": "Gingembre + Sureau",
+      "sublabel": "grippe · ×2",
+      "width": 158
+    },
+    {
+      "id": "duo-gin-ech",
+      "lane": "immunite",
+      "col": 5,
+      "type": "backend",
+      "label": "Gingembre + Échinacée",
+      "sublabel": "immunité · ×2",
+      "width": 158
+    },
+    {
+      "id": "duo-thy-ech",
+      "lane": "tonus",
+      "col": 2,
+      "type": "backend",
+      "label": "Thym + Échinacée",
+      "sublabel": "immunité · ×2",
+      "width": 158
+    },
+    {
+      "id": "duo-gin-thy",
+      "lane": "tonus",
+      "col": 3,
+      "type": "backend",
+      "label": "Gingembre + Thym",
+      "sublabel": "toux · ×2",
+      "width": 158
+    },
+    {
+      "id": "duo-bar-pis",
+      "lane": "tonus",
+      "col": 4,
+      "type": "backend",
+      "label": "Bardane + Pissenlit",
+      "sublabel": "foie et peau · ×2",
+      "width": 158
+    },
+    {
+      "id": "duo-cas-ort",
+      "lane": "tonus",
+      "col": 5,
+      "type": "backend",
+      "label": "Cassis + Ortie",
+      "sublabel": "reminéral · ×3",
+      "width": 158
+    }
+  ],
+  "edges": [
+    {
+      "id": "besoin-filtres",
+      "from": "symptome",
+      "to": "filtres",
+      "variant": "emphasis"
+    },
+    {
+      "id": "filtres-nerfs",
+      "from": "filtres",
+      "to": "duo-aub-mel",
+      "variant": "default"
+    },
+    {
+      "id": "filtres-immu",
+      "from": "filtres",
+      "to": "duo-sur-ech",
+      "variant": "emphasis"
+    },
+    {
+      "id": "filtres-tonus",
+      "from": "filtres",
+      "to": "duo-thy-ech",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Les 12 duos récurrents",
+      "items": [
+        "Sureau + Échinacée et Cassis + Ortie : ×3 chacun",
+        "Dix autres duos ×2, du stress à la ménopause",
+        "15 plantes composent ces duos, sur 78 associées au total"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Cinq polyvalentes",
+      "items": [
+        "Réglisse, curcuma, romarin, mauve et fenouil : 3 recettes chacune",
+        "Elles épicent les duos sans former de paire récurrente"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Sécurité",
+      "items": [
+        "Grossesse : Calme intérieur et Immunité des enfants écartés",
+        "Interactions médicamenteuses signalées fiche par fiche"
+      ]
+    }
+  ]
+}

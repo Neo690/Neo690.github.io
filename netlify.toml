@@ -1,0 +1,58 @@
+# netlify.toml — Déploiement Herbier Médicinal sur Netlify
+# Le site publié est la copie propre www/ (copy-www.mjs exclut keystore/, netlify/,
+# node_modules, logs, binaires…). Ne JAMAIS revenir à publish = "." : la racine
+# contient le keystore de signature Android, les fonctions avec secrets, les logs
+# et les APK — tout cela s'est retrouvé publiquement servi le 2026-10-02.
+
+[build]
+  command = "node copy-www.mjs"
+  publish = "www"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/install-count"
+  to = "/.netlify/functions/install-count"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
+
+# Service worker : jamais mis en cache CDN (mises à jour immédiates côté clients)
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+# Manifeste PWA : frais, mais cacheable
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "no-cache"
+    Content-Type = "application/manifest+json; charset=utf-8"
+
+# HTML : toujours frais (le SW gère son propre cache)
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# Données et JS d'app : revalidés à chaque chargement (cohérence compteur/stats)
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# Polices et planches : immuables en pratique → cache long 30 jours
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, immutable"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"

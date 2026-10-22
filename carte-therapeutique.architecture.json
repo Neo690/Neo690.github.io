@@ -1,0 +1,368 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "L'Herbier Médicinal — système thérapeutique",
+    "output": "carte-therapeutique.html",
+    "visual_preset": "editorial",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "parcours",
+        "label": "Parcours principal",
+        "focus": [
+          "symptomes",
+          "objectifs",
+          "associations",
+          "fiches",
+          "carte"
+        ],
+        "note": "De la recherche par symptôme aux fiches détaillées et à la carte des synergies."
+      },
+      {
+        "id": "accompagnement",
+        "label": "Accompagnement personnalisé",
+        "focus": [
+          "objectifs",
+          "pharmacopee",
+          "assistant",
+          "associations"
+        ],
+        "note": "Questionnaire de santé en 3 étapes et index pharmacopée A-Z complètent la recherche."
+      },
+      {
+        "id": "safety",
+        "label": "Sécurité",
+        "focus": [
+          "objectifs",
+          "interactions",
+          "populations",
+          "avis",
+          "donnees"
+        ],
+        "note": "Les contre-indications et interactions sont vérifiées avant tout usage."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "symptomes",
+      "type": "external",
+      "label": "Besoin santé",
+      "sublabel": "symptôme ou objectif",
+      "pos": [
+        40,
+        200
+      ],
+      "size": [
+        130,
+        54
+      ]
+    },
+    {
+      "id": "objectifs",
+      "type": "backend",
+      "label": "Recherche & filtres",
+      "sublabel": "140 plantes · 67 bienfaits",
+      "pos": [
+        210,
+        200
+      ],
+      "size": [
+        140,
+        54
+      ]
+    },
+    {
+      "id": "associations",
+      "type": "database",
+      "label": "60 associations",
+      "sublabel": "Synergies dosées",
+      "pos": [
+        390,
+        200
+      ],
+      "size": [
+        140,
+        54
+      ],
+      "tag": "recettes complètes"
+    },
+    {
+      "id": "fiches",
+      "type": "frontend",
+      "label": "Fiches plantes",
+      "sublabel": "140 monographies",
+      "pos": [
+        580,
+        200
+      ],
+      "size": [
+        150,
+        54
+      ]
+    },
+    {
+      "id": "carte",
+      "type": "frontend",
+      "label": "Carte des synergies",
+      "sublabel": "duos qui reviennent",
+      "pos": [
+        760,
+        200
+      ],
+      "size": [
+        150,
+        54
+      ]
+    },
+    {
+      "id": "pharmacopee",
+      "type": "backend",
+      "label": "Pharmacopée A-Z",
+      "sublabel": "noms français et latins",
+      "pos": [
+        210,
+        50
+      ],
+      "size": [
+        140,
+        50
+      ]
+    },
+    {
+      "id": "assistant",
+      "type": "backend",
+      "label": "Assistant santé",
+      "sublabel": "questionnaire 3 étapes",
+      "pos": [
+        390,
+        50
+      ],
+      "size": [
+        140,
+        50
+      ]
+    },
+    {
+      "id": "donnees",
+      "type": "database",
+      "label": "Base fusionnée",
+      "sublabel": "3 datasets · 161 liens",
+      "pos": [
+        210,
+        360
+      ],
+      "size": [
+        140,
+        50
+      ]
+    },
+    {
+      "id": "avis",
+      "type": "external",
+      "label": "Avis professionnel",
+      "sublabel": "Médecin, pharmacien",
+      "pos": [
+        390,
+        360
+      ],
+      "size": [
+        160,
+        50
+      ]
+    },
+    {
+      "id": "interactions",
+      "type": "security",
+      "label": "Interactions",
+      "sublabel": "Médicaments",
+      "pos": [
+        580,
+        360
+      ],
+      "size": [
+        150,
+        50
+      ],
+      "tag": "garde-fou"
+    },
+    {
+      "id": "populations",
+      "type": "security",
+      "label": "Populations à risque",
+      "sublabel": "Grossesse, enfants",
+      "pos": [
+        760,
+        360
+      ],
+      "size": [
+        150,
+        50
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Accès guidé",
+      "wraps": [
+        "pharmacopee",
+        "assistant"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "Garde-fous",
+      "wraps": [
+        "interactions",
+        "populations"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "symptomes-to-objectifs",
+      "from": "symptomes",
+      "to": "objectifs",
+      "label": "besoin santé",
+      "variant": "emphasis",
+      "labelDy": -19
+    },
+    {
+      "id": "objectifs-to-assoc",
+      "from": "objectifs",
+      "to": "associations",
+      "label": "bienfaits ciblés",
+      "labelDy": -19
+    },
+    {
+      "id": "assoc-to-fiches",
+      "from": "associations",
+      "to": "fiches",
+      "label": "fiches détaillées",
+      "labelDy": -19
+    },
+    {
+      "id": "fiches-to-carte",
+      "from": "fiches",
+      "to": "carte",
+      "label": "duos récurrents",
+      "labelDy": -19
+    },
+    {
+      "id": "objectifs-to-pharma",
+      "from": "objectifs",
+      "to": "pharmacopee",
+      "label": "index A-Z",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "assistant-to-assoc",
+      "from": "assistant",
+      "to": "associations",
+      "label": "recommande 3",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "fiches-to-interactions",
+      "from": "fiches",
+      "to": "interactions",
+      "label": "précautions",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "variant": "dashed",
+      "labelAt": [
+        655,
+        300
+      ]
+    },
+    {
+      "id": "carte-to-populations",
+      "from": "carte",
+      "to": "populations",
+      "label": "contre-indications",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "variant": "security",
+      "labelAt": [
+        840,
+        300
+      ]
+    },
+    {
+      "id": "interactions-to-avis",
+      "from": "interactions",
+      "to": "avis",
+      "label": "si doute",
+      "variant": "dashed",
+      "labelAt": [
+        556,
+        424
+      ]
+    },
+    {
+      "id": "populations-to-avis",
+      "from": "populations",
+      "to": "avis",
+      "label": "population à risque",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "bottom",
+      "via": [
+        [
+          835,
+          435
+        ],
+        [
+          470,
+          435
+        ]
+      ],
+      "labelAt": [
+        655,
+        445
+      ]
+    },
+    {
+      "id": "donnees-to-objectifs",
+      "from": "donnees",
+      "to": "objectifs",
+      "label": "alimente",
+      "fromSide": "top",
+      "toSide": "bottom"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Documentation",
+      "items": [
+        "140 monographies de plantes avec principes actifs",
+        "60 associations dosées et 161 liens plante-plante",
+        "Index pharmacopée A-Z : noms français et latins"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Parcours guidé",
+      "items": [
+        "Questionnaire en 3 étapes : objectif, antécédents, forme",
+        "L'assistant filtre les 34 associations et propose un trio",
+        "Export JSON/CSV de toute la base pour d'autres applications"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Sécurité",
+      "items": [
+        "Interactions médicamenteuses signalées (millepertuis, ginkgo)",
+        "Populations sensibles : grossesse, enfants, auto-immunité",
+        "Ne remplace pas un avis médical ou pharmaceutique"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# GitHub Pages n'honore pas _headers (syntaxe Netlify).
+# Conservé comme documentation : ces règles étaient appliquées par netlify.toml.
+#
+#   /sw.js                  Cache-Control: no-cache, no-store, must-revalidate
+#   /manifest.webmanifest   Cache-Control: no-cache
+#   /*.html                 Cache-Control: no-cache
+#   /*.js                   Cache-Control: no-cache
+#   /fonts/*                Cache-Control: public, max-age=2592000, immutable
+#   /images/*               Cache-Control: public, max-age=2592000
